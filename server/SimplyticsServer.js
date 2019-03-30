@@ -26,4 +26,4 @@ exports.default = SimplyticsServer;
 (() => {
     new SimplyticsServer();
 })();
-//# sourceMappingURL=Server.js.map
+//# sourceMappingURL=SimplyticsServer.js.map

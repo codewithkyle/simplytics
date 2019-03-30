@@ -23,7 +23,7 @@ export default class SimplyticsServer{
         });
 
         // Handle new websocket connections
-        this._io.on('connection', (socket:any)=>{
+        this._io.on('connection', (socket:SocketIO.Socket)=>{
             console.log('a user connected');
         });
 
