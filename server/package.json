@@ -1,5 +1,5 @@
 {
-    "name": "@codewithkyle/simplytics",
+    "name": "@codewithkyle/simplytics-server",
     "version": "0.0.1",
     "description": "A simple analytics tool and dashboard.",
     "keywords": [
@@ -11,7 +11,7 @@
     "author": "Kyle Andrews (http://codewithkyle.com/)",
     "license": "MIT",
     "main": "simplytics.js",
-    "types": "./typings/global.d.ts",
+    "types": "./src/global.d.ts",
     "files": [
         "src",
         "lib"
@@ -22,26 +22,21 @@
         }
     },
     "dependencies": {
-        "@codewithkyle/device-manager": "latest",
+        "@types/express": "^4.16.1",
+        "@types/socket.io": "^2.1.2",
         "express": "^4.15.2",
         "socket.io": "^2.2.0"
     },
     "devDependencies": {
-        "http-server": "^0.11.1",
         "husky": "^0.14.3",
-        "npm-run-all": "^4.1.5",
         "tslint": "^5.14.0",
         "tslint-config-airbnb": "^5.11.1",
         "tslint-config-prettier": "^1.18.0",
-        "typescript": "^3.3.4000",
-        "webpack": "^4.29.6",
-        "webpack-cli": "^3.3.0"
+        "typescript": "^3.3.4000"
     },
     "scripts": {
-        "precommit": "tslint -c .tslintrc.js -p tsconfig.json -t verbose",
+        "precommit": "tslint -c ../.tslintrc.js -p tsconfig.json -t verbose",
         "compile": "tsc",
-        "bundle": "webpack",
-        "demo": "http-server ./testing",
-        "test": "npm run compile && npm run bundle && npm run demo"
+        "server": "node Server.js"
     }
 }
