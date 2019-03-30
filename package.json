@@ -22,7 +22,9 @@
         }
     },
     "dependencies": {
-        "@codewithkyle/device-manager": "latest"
+        "@codewithkyle/device-manager": "latest",
+        "express": "^4.15.2",
+        "socket.io": "^2.2.0"
     },
     "devDependencies": {
         "http-server": "^0.11.1",
