@@ -1,0 +1,45 @@
+{
+    "name": "@codewithkyle/simplytics",
+    "version": "0.0.1",
+    "description": "A simple analytics tool and dashboard.",
+    "keywords": [
+        "typescript",
+        "analytics",
+        "error-reporting"
+    ],
+    "repository": "https://github.com/codewithkyle/simplytics.git",
+    "author": "Kyle Andrews (http://codewithkyle.com/)",
+    "license": "MIT",
+    "main": "simplytics.js",
+    "types": "./typings/global.d.ts",
+    "files": [
+        "src",
+        "lib"
+    ],
+    "husky": {
+        "hooks": {
+            "pre-commit": "npm run precommit"
+        }
+    },
+    "dependencies": {
+        "@codewithkyle/device-manager": "latest"
+    },
+    "devDependencies": {
+        "http-server": "^0.11.1",
+        "husky": "^0.14.3",
+        "npm-run-all": "^4.1.5",
+        "tslint": "^5.14.0",
+        "tslint-config-airbnb": "^5.11.1",
+        "tslint-config-prettier": "^1.18.0",
+        "typescript": "^3.3.4000",
+        "webpack": "^4.29.6",
+        "webpack-cli": "^3.3.0"
+    },
+    "scripts": {
+        "precommit": "tslint -c .tslintrc.js -p tsconfig.json -t verbose",
+        "compile": "tsc",
+        "bundle": "webpack",
+        "demo": "http-server ./testing",
+        "test": "npm run compile && npm run bundle && npm run demo"
+    }
+}
