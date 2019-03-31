@@ -23,6 +23,9 @@ export default class Client{
         this.socket.on('disconnect', ()=>{ this.disconnect(); });
     }
 
+    /**
+     * Called when the sockets `disconnect` event is fired.
+     */
     private disconnect():void{
         console.log(`${ this.id } disconnected`);
         this._server.handleDisconnect(this);

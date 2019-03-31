@@ -94,7 +94,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Simplytics_1 = __webpack_require__(1);
 var App = (function () {
     function App() {
-        this._simplytics = new Simplytics_1.default();
+        this._simplytics = new Simplytics_1.default(true);
     }
     return App;
 }());
@@ -113,16 +113,24 @@ exports.default = App;
 Object.defineProperty(exports, "__esModule", { value: true });
 var io = __webpack_require__(2);
 var Simplytics = (function () {
-    function Simplytics(server, port, isDebug) {
+    function Simplytics(isDebug, server, port) {
+        if (isDebug === void 0) { isDebug = false; }
         if (server === void 0) { server = null; }
         if (port === void 0) { port = 8181; }
-        if (isDebug === void 0) { isDebug = false; }
         Simplytics.SERVER = (server === null) ? window.location.hostname : server;
         Simplytics.PORT = port;
         this._socket = io.connect(Simplytics.SERVER + ":" + Simplytics.PORT);
+        this._isDebug = isDebug;
         this.init();
     }
     Simplytics.prototype.init = function () {
+        var _this = this;
+        this._socket.on('connect', function () { _this.connect(); });
+    };
+    Simplytics.prototype.connect = function () {
+        if (this._isDebug) {
+            console.log("Simplytics connected with the server at " + Simplytics.SERVER + ":" + Simplytics.PORT);
+        }
     };
     return Simplytics;
 }());
