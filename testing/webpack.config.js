@@ -9,9 +9,9 @@ module.exports = {
     resolve: {
         extensions: ['.js']
     },
-    entry: './testing/App.js',
+    entry: path.resolve(__dirname, 'app.js'),
     output: {
-        path: path.resolve(__dirname, "testing/assets"),
+        path: path.resolve(__dirname),
         filename: 'main.js',
         pathinfo: false
     }
