@@ -12,6 +12,7 @@ export default class Simplytics{
 
     // Variables
     private _isDebug:   boolean;
+    private _uuid:      string;
 
     constructor(isDebug:boolean = false, server:string = null, port:number = 8181){
         
@@ -24,6 +25,7 @@ export default class Simplytics{
 
         // Variables
         this._isDebug   = isDebug;
+        this._uuid      = window.localStorage.getItem(`${ window.location.host }_simplytics`);
 
         this.init();
     }
@@ -39,5 +41,17 @@ export default class Simplytics{
         if(this._isDebug){
             console.log(`Simplytics connected with the server at ${ Simplytics.SERVER }:${ Simplytics.PORT }`);
         }
+
+        if(this._uuid === null){
+            this._uuid = uuid();
+            window.localStorage.setItem(`${ window.location.host }_simplytics`, `${ this._uuid }`);
+            if(this._isDebug){
+                console.log(`Generated a new UUID ${ this._uuid }`);
+            }
+        }else if(this._isDebug){
+            console.log(`Using existing UUID ${ this._uuid }`);
+        }
+
+        this._socket.emit('identify', this._uuid);
     }
 }

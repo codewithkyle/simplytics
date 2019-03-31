@@ -10,10 +10,14 @@ class Client {
     init() {
         console.log(`${this.id} connected`);
         this.socket.on('disconnect', () => { this.disconnect(); });
+        this.socket.on('identify', (uuid) => { this.setIdentity(uuid); });
     }
     disconnect() {
         console.log(`${this.id} disconnected`);
         this._server.handleDisconnect(this);
+    }
+    setIdentity(uuid) {
+        this.uuid = uuid;
     }
 }
 exports.default = Client;
