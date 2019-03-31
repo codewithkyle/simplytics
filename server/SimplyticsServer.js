@@ -26,7 +26,7 @@ class SimplyticsServer {
     }
     handleDisconnect(client) {
         for (let i = 0; i < this._clients.length; i++) {
-            if (this._clients[i].socket.id === client.socket.id) {
+            if (this._clients[i].socket.id === client.id) {
                 this._clients.splice(i, 1);
             }
         }

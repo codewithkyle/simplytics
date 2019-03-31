@@ -51,10 +51,10 @@ export default class SimplyticsServer{
      * Called when a user disconnects from the server.
      * @param client `Client`
      */
-    handleDisconnect(client:Client){
+    public handleDisconnect(client:Client):void{
         // Remove the client from the array of clients
         for(let i = 0; i < this._clients.length; i++){
-            if(this._clients[i].socket.id === client.socket.id){
+            if(this._clients[i].socket.id === client.id){
                 this._clients.splice(i, 1);
             }
         }

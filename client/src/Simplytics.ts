@@ -2,14 +2,17 @@ import * as io from 'socket.io-client';
 
 export default class Simplytics{
 
-    private static readonly SERVER:string   = '127.0.0.1';
-    private static readonly PORT:string     = '8181';
+    private static SERVER:string;
+    private static PORT:number;
 
     private _socket:    SocketIO.Socket;
 
-    constructor(isDebug:boolean = false){
-        this._socket    = io(`${ Simplytics.SERVER }:${ Simplytics.PORT }`);
+    constructor(server:string = null, port:number = 8181, isDebug:boolean = false){
+        
+        Simplytics.SERVER   = (server === null) ? window.location.hostname : server;
+        Simplytics.PORT     = port;
 
+        this._socket    = io.connect(`${ Simplytics.SERVER }:${ Simplytics.PORT }`);
         this.init();
     }
 

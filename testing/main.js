@@ -113,15 +113,17 @@ exports.default = App;
 Object.defineProperty(exports, "__esModule", { value: true });
 var io = __webpack_require__(2);
 var Simplytics = (function () {
-    function Simplytics(isDebug) {
+    function Simplytics(server, port, isDebug) {
+        if (server === void 0) { server = null; }
+        if (port === void 0) { port = 8181; }
         if (isDebug === void 0) { isDebug = false; }
-        this._socket = io(Simplytics.SERVER + ":" + Simplytics.PORT);
+        Simplytics.SERVER = (server === null) ? window.location.hostname : server;
+        Simplytics.PORT = port;
+        this._socket = io.connect(Simplytics.SERVER + ":" + Simplytics.PORT);
         this.init();
     }
     Simplytics.prototype.init = function () {
     };
-    Simplytics.SERVER = '127.0.0.1';
-    Simplytics.PORT = '8181';
     return Simplytics;
 }());
 exports.default = Simplytics;
