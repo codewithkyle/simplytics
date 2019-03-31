@@ -2,16 +2,27 @@ import * as express from 'express';
 import * as io from 'socket.io';
 import { createServer } from 'http';
 
+import Client from './lib/Client';
+
 export default class SimplyticsServer{
     
+    // Server
     private _app:       Express.Application;
-    private _server:    any;
+    private _server:    IServer;
     private _io:        SocketIO.Server;
 
+    // Sockets
+    private _clients:   Array<Client>;
+
     constructor(){
+        
+        // Server
         this._app       = express();
         this._server    = createServer(this._app);
         this._io        = io(this._server);
+
+        // Sockets
+        this._clients   = [];
 
         this.init();
     }
@@ -23,19 +34,32 @@ export default class SimplyticsServer{
         });
 
         // Handle new websocket connections
-        this._io.on('connection', (socket:SocketIO.Socket)=>{
-            console.log('a user connected');
+        this._io.sockets.on('connection', (socket:SocketIO.Socket)=>{
+            const newSocket = new Client(socket, this);
+            this._clients.push(newSocket);
         });
 
-        // Server a custom dashboard
+        // Serve a custom admin dashboard
         // @ts-ignore
         this._app.get('/', (req:Express.Request, res:Express.Response)=>{
             // @ts-ignore
             res.sendFile(`${ __dirname }/dashboard.html`);
         });
     }
+
+    /**
+     * Called when a user disconnects from the server.
+     * @param client `Client`
+     */
+    handleDisconnect(client:Client){
+        // Remove the client from the array of clients
+        for(let i = 0; i < this._clients.length; i++){
+            if(this._clients[i].socket.id === client.socket.id){
+                this._clients.splice(i, 1);
+            }
+        }
+	}
 }
 
-(()=>{
-    new SimplyticsServer();
-})();
+// Start the server
+new SimplyticsServer();

@@ -1,5 +1,5 @@
 {
-    "name": "@codewithkyle/simplytics-server",
+    "name": "@codewithkyle/simplytics",
     "version": "0.0.1",
     "description": "A simple analytics tool and dashboard.",
     "keywords": [
@@ -26,18 +26,24 @@
         "socket.io": "^2.2.0"
     },
     "devDependencies": {
+        "http-server": "^0.11.1",
         "husky": "^0.14.3",
         "npm-run-all": "^4.1.5",
         "tslint": "^5.14.0",
         "tslint-config-airbnb": "^5.11.1",
         "tslint-config-prettier": "^1.18.0",
-        "typescript": "^3.3.4000"
+        "typescript": "^3.3.4000",
+        "webpack": "^4.29.6",
+        "webpack-cli": "^3.3.0"
     },
     "scripts": {
         "precommit": "tslint -c .tslintrc.js -p ./client/tsconfig.json -t verbose",
         "compile": "npm-run-all compile:*",
         "compile:server": "tsc -p ./server/tsconfig.json",
         "compile:client": "tsc -p ./client/tsconfig.json",
-        "start": "node ./server/SimplyticsServer.js"
+        "compile:test": "tsc -p ./testing/tsconfig.json && webpack --config ./testing/webpack.config.js",
+        "bundle": "webpack --config ./testing/webpack.config.js",
+        "start": "node ./server/SimplyticsServer.js",
+        "test": "http-server ./testing -s"
     }
 }
