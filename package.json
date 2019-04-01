@@ -20,11 +20,8 @@
         }
     },
     "dependencies": {
-        "@types/express": "^4.16.1",
         "@types/socket.io": "^2.1.2",
-        "express": "^4.15.2",
-        "socket.io": "^2.2.0",
-        "uuid": "^3.3.2"
+        "socket.io": "^2.2.0"
     },
     "devDependencies": {
         "http-server": "^0.11.1",
@@ -39,12 +36,8 @@
     },
     "scripts": {
         "precommit": "tslint -c .tslintrc.js -p ./client/tsconfig.json -t verbose",
-        "compile": "npm-run-all compile:*",
-        "compile:server": "tsc -p ./server/tsconfig.json",
-        "compile:client": "tsc -p ./client/tsconfig.json",
-        "compile:test": "tsc -p ./testing/tsconfig.json && webpack --config ./testing/webpack.config.js",
+        "compile": "tsc -p ./testing/tsconfig.json && webpack --config ./testing/webpack.config.js",
         "bundle": "webpack --config ./testing/webpack.config.js",
-        "start": "node ./server/SimplyticsServer.js",
         "test": "http-server ./testing -s"
     }
 }
