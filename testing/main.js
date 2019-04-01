@@ -94,7 +94,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Simplytics_1 = __webpack_require__(1);
 var App = (function () {
     function App() {
-        this._simplytics = new Simplytics_1.default();
+        this._simplytics = new Simplytics_1.default(true);
     }
     return App;
 }());
@@ -112,16 +112,39 @@ exports.default = App;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var io = __webpack_require__(2);
+var uuid = __webpack_require__(52);
 var Simplytics = (function () {
-    function Simplytics(isDebug) {
+    function Simplytics(isDebug, server, port) {
         if (isDebug === void 0) { isDebug = false; }
-        this._socket = io(Simplytics.SERVER + ":" + Simplytics.PORT);
+        if (server === void 0) { server = null; }
+        if (port === void 0) { port = 8181; }
+        Simplytics.SERVER = (server === null) ? window.location.hostname : server;
+        Simplytics.PORT = port;
+        this._socket = io.connect(Simplytics.SERVER + ":" + Simplytics.PORT);
+        this._isDebug = isDebug;
+        this._uuid = window.localStorage.getItem(window.location.host + "_simplytics");
         this.init();
     }
     Simplytics.prototype.init = function () {
+        var _this = this;
+        this._socket.on('connect', function () { _this.connect(); });
     };
-    Simplytics.SERVER = '127.0.0.1';
-    Simplytics.PORT = '8181';
+    Simplytics.prototype.connect = function () {
+        if (this._isDebug) {
+            console.log("Simplytics connected with the server at " + Simplytics.SERVER + ":" + Simplytics.PORT);
+        }
+        if (this._uuid === null) {
+            this._uuid = uuid();
+            window.localStorage.setItem(window.location.host + "_simplytics", "" + this._uuid);
+            if (this._isDebug) {
+                console.log("Generated a new UUID " + this._uuid);
+            }
+        }
+        else if (this._isDebug) {
+            console.log("Using existing UUID " + this._uuid);
+        }
+        this._socket.emit('identify', this._uuid);
+    };
     return Simplytics;
 }());
 exports.default = Simplytics;
@@ -9646,6 +9669,111 @@ Backoff.prototype.setJitter = function(jitter){
   this.jitter = jitter;
 };
 
+
+
+/***/ }),
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var rng = __webpack_require__(53);
+var bytesToUuid = __webpack_require__(54);
+
+function v4(options, buf, offset) {
+  var i = buf && offset || 0;
+
+  if (typeof(options) == 'string') {
+    buf = options === 'binary' ? new Array(16) : null;
+    options = null;
+  }
+  options = options || {};
+
+  var rnds = options.random || (options.rng || rng)();
+
+  // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
+  rnds[6] = (rnds[6] & 0x0f) | 0x40;
+  rnds[8] = (rnds[8] & 0x3f) | 0x80;
+
+  // Copy bytes to buffer, if provided
+  if (buf) {
+    for (var ii = 0; ii < 16; ++ii) {
+      buf[i + ii] = rnds[ii];
+    }
+  }
+
+  return buf || bytesToUuid(rnds);
+}
+
+module.exports = v4;
+
+
+/***/ }),
+/* 53 */
+/***/ (function(module, exports) {
+
+// Unique ID creation requires a high quality random # generator.  In the
+// browser this is a little complicated due to unknown quality of Math.random()
+// and inconsistent support for the `crypto` API.  We do the best we can via
+// feature-detection
+
+// getRandomValues needs to be invoked in a context where "this" is a Crypto
+// implementation. Also, find the complete implementation of crypto on IE11.
+var getRandomValues = (typeof(crypto) != 'undefined' && crypto.getRandomValues && crypto.getRandomValues.bind(crypto)) ||
+                      (typeof(msCrypto) != 'undefined' && typeof window.msCrypto.getRandomValues == 'function' && msCrypto.getRandomValues.bind(msCrypto));
+
+if (getRandomValues) {
+  // WHATWG crypto RNG - http://wiki.whatwg.org/wiki/Crypto
+  var rnds8 = new Uint8Array(16); // eslint-disable-line no-undef
+
+  module.exports = function whatwgRNG() {
+    getRandomValues(rnds8);
+    return rnds8;
+  };
+} else {
+  // Math.random()-based (RNG)
+  //
+  // If all else fails, use Math.random().  It's fast, but is of unspecified
+  // quality.
+  var rnds = new Array(16);
+
+  module.exports = function mathRNG() {
+    for (var i = 0, r; i < 16; i++) {
+      if ((i & 0x03) === 0) r = Math.random() * 0x100000000;
+      rnds[i] = r >>> ((i & 0x03) << 3) & 0xff;
+    }
+
+    return rnds;
+  };
+}
+
+
+/***/ }),
+/* 54 */
+/***/ (function(module, exports) {
+
+/**
+ * Convert array of 16 byte values to UUID string format of the form:
+ * XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+ */
+var byteToHex = [];
+for (var i = 0; i < 256; ++i) {
+  byteToHex[i] = (i + 0x100).toString(16).substr(1);
+}
+
+function bytesToUuid(buf, offset) {
+  var i = offset || 0;
+  var bth = byteToHex;
+  // join used to fix memory issue caused by concatenation: https://bugs.chromium.org/p/v8/issues/detail?id=3175#c4
+  return ([bth[buf[i++]], bth[buf[i++]], 
+	bth[buf[i++]], bth[buf[i++]], '-',
+	bth[buf[i++]], bth[buf[i++]], '-',
+	bth[buf[i++]], bth[buf[i++]], '-',
+	bth[buf[i++]], bth[buf[i++]], '-',
+	bth[buf[i++]], bth[buf[i++]],
+	bth[buf[i++]], bth[buf[i++]],
+	bth[buf[i++]], bth[buf[i++]]]).join('');
+}
+
+module.exports = bytesToUuid;
 
 
 /***/ })

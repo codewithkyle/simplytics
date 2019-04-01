@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Simplytics_1 = require("../client/Simplytics");
 var App = (function () {
     function App() {
-        this._simplytics = new Simplytics_1.default();
+        this._simplytics = new Simplytics_1.default(true);
     }
     return App;
 }());

@@ -5,7 +5,7 @@ export default class App{
     private _simplytics:    Simplytics;
 
     constructor(){
-        this._simplytics    = new Simplytics();
+        this._simplytics    = new Simplytics(true);
     }
 }
 
