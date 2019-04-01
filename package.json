@@ -35,8 +35,10 @@
         "webpack-cli": "^3.3.0"
     },
     "scripts": {
-        "precommit": "tslint -c .tslintrc.js -p ./client/tsconfig.json -t verbose",
-        "compile": "tsc -p ./testing/tsconfig.json && webpack --config ./testing/webpack.config.js",
+        "precommit": "tslint -c .tslintrc.js -p tsconfig.json -t verbose",
+        "compile": "npm-run-all compile:*",
+        "compile:package": "tsc -p ./tsconfig.json",
+        "compile:test": "tsc -p ./testing/tsconfig.json && webpack --config ./testing/webpack.config.js",
         "bundle": "webpack --config ./testing/webpack.config.js",
         "test": "http-server ./testing -s"
     }
